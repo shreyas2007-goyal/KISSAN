@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ fpo.name }} – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 40px 20px;">
+    <div class="card" style="padding: 36px; margin-bottom: 28px;">
+        <span class="badge badge-verified">Verified Producer Company</span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-primary); margin: 6px 0;">
+            {{ fpo.name }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
+            CIN: <strong>{{ fpo.registration_number }}</strong> | {{ fpo.headquarters }} | Contact: <strong>{{ fpo.contact_phone }}</strong>
+        </p>
+
+        <div style="display: flex; gap: 14px; align-items: center;">
+            {% if is_member %}
+                <span class="badge badge-verified" style="font-size: 0.9rem; padding: 6px 14px;">
+                    ✓ You are a Registered Member Shareholder
+                </span>
+            {% elif user.is_authenticated and user.farmer_profile %}
+                <a href="{% url 'fpo:join' fpo.id %}" class="btn btn-primary">
+                    + Join this FPO as Farmer Member
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary">
+                    Login to Join this FPO
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Collective Lots -->
+    <div class="card">
+        <h2 class="card-title" style="margin-bottom: 16px;">Collective Grain Aggregation Lots</h2>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Lot Code</th>
+                        <th>Crop</th>
+                        <th>Pooled Volume</th>
+                        <th>Target Rate</th>
+                        <th>Storage Point</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lot in lots %}
+                        <tr>
+                            <td><strong style="font-family: monospace;">{{ lot.lot_code }}</strong></td>
+                            <td>{{ lot.crop.name }}</td>
+                            <td>{{ lot.aggregated_quantity_quintals }} qtl</td>
+                            <td><strong style="color: #059669;">₹{{ lot.target_price_per_quintal }}/qtl</strong></td>
+                            <td>{{ lot.storage_facility }}</td>
+                            <td><span class="badge badge-verified">{{ lot.get_status_display }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center;">No lots currently in progress.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

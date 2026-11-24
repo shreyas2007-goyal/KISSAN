@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Compare Mandis – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <div style="margin-bottom: 28px;">
+        <span class="badge badge-verified">Market Intelligence</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+            Cross-Mandi Price Comparison for {{ crop.name }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Compare prices across primary yards, terminal mandis, and regional consuming centers.
+        </p>
+    </div>
+
+    <!-- Crop Selector -->
+    <div class="card" style="margin-bottom: 28px;">
+        <form method="get">
+            <div style="display: flex; gap: 14px; align-items: flex-end;">
+                <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
+                    <label class="form-label">Select Crop to Compare</label>
+                    <select name="crop" class="form-select" onchange="this.form.submit()">
+                        {% for c in crops %}
+                            <option value="{{ c.id }}" {% if crop.id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Side by Side Mandi Cards -->
+    <div class="grid grid-3" style="margin-bottom: 30px;">
+        {% for comp in comparisons %}
+            <div class="card" style="padding: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <span class="card-title" style="font-size: 1.15rem;">{{ comp.mandi.name }}</span>
+                        <span style="display: block; font-size: 0.82rem; color: var(--text-muted);">{{ comp.mandi.district }}, {{ comp.mandi.state }}</span>
+                    </div>
+                    <span class="badge badge-verified">Rate</span>
+                </div>
+
+                <div style="margin: 16px 0;">
+                    <span style="font-size: 2rem; font-weight: 900; color: var(--color-primary);">₹{{ comp.modal_price }}</span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">/ qtl</span>
+                </div>
+
+                <div style="font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 12px; line-height: 1.7;">
+                    <div style="display: flex; justify-content: space-between;"><span>Min: ₹{{ comp.min_price }}</span> <span>Max: ₹{{ comp.max_price }}</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>Mandi User Cess:</span> <span>{{ comp.mandi.market_fee_percent }}%</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>Unloading / Labor:</span> <span>₹{{ comp.mandi.unloading_charge_per_quintal }}/qtl</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>Observed Date:</span> <span>{{ comp.price_date }}</span></div>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <a href="{% url 'calculator:calculate' %}?crop={{ comp.crop.id }}" class="btn btn-primary btn-sm" style="width: 100%;">
+                        Run Net Realisation →
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No comparisons available for this crop.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

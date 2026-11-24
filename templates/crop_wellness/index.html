@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Crop Wellness & Disease Screening – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">PyTorch & OpenCV Neural Vision Pipeline</span>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                {{ t.nav_wellness }}
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Early crop disease detection and digital screening. Upload a plant photograph to identify pathogens, severity levels, and university-recommended treatments.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'wellness:screen' %}" class="btn btn-primary btn-lg">
+                📸 Upload Crop Leaf Photo
+            </a>
+            <a href="{% url 'wellness:catalog' %}" class="btn btn-outline btn-lg">
+                📖 Disease Encyclopedia
+            </a>
+        </div>
+    </div>
+
+    <!-- AI Safety Notice -->
+    <div class="alert alert-info" style="margin-bottom: 32px;">
+        <span style="font-size: 1.4rem;">🔬</span>
+        <div>
+            <strong style="display:block; margin-bottom: 2px;">Agronomic AI Safety Standard:</strong>
+            <span style="font-size: 0.88rem; color: #1E429F;">
+                All predictions represent preliminary visual screening estimations. Low-confidence uploads (&lt;50%) or blurred images are flagged as inconclusive. Always confirm critical distress with your regional Krishi Vigyan Kendra (KVK) officer.
+            </span>
+        </div>
+    </div>
+
+    <!-- Features Overview Grid -->
+    <div class="grid grid-3" style="margin-bottom: 36px;">
+        <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 10px;">🔍</div>
+            <h3 class="card-title">OpenCV Blur & Artifact Check</h3>
+            <p class="card-desc">
+                Calculates Laplacian variance before inference. Rejects unusable blurred photographs to prevent false disease positives.
+            </p>
+        </div>
+        <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 10px;">🧠</div>
+            <h3 class="card-title">PyTorch Vision Inference</h3>
+            <p class="card-desc">
+                Calibrated multi-class neural classification matching plant foliage against research pathogen signatures.
+            </p>
+        </div>
+        <div class="card">
+            <div style="font-size: 2rem; margin-bottom: 10px;">📄</div>
+            <h3 class="card-title">Downloadable PDF Advice</h3>
+            <p class="card-desc">
+                Generates a printable PDF screening certificate with symptoms, university pesticide dosages, and cultural remedies.
+            </p>
+        </div>
+    </div>
+
+    <!-- Curated Diseases List Preview -->
+    <div class="card" style="margin-bottom: 36px;">
+        <div class="card-header">
+            <span class="card-title">🌾 Screened Crop Pathogens (Curated University Reference)</span>
+            <a href="{% url 'wellness:catalog' %}" style="font-size: 0.85rem; font-weight: 700; color: var(--color-accent); text-decoration: none;">View Full Catalog →</a>
+        </div>
+        <div class="grid grid-2">
+            {% for d in diseases %}
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; background: var(--bg-surface);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                        <strong style="font-size: 1.05rem;">{{ d.name_en }}</strong>
+                        <span class="badge badge-warning">{{ d.get_default_severity_display }}</span>
+                    </div>
+                    {% if d.name_hi %}<span style="display:block; font-size:0.85rem; color:var(--text-muted); margin-bottom:6px;">{{ d.name_hi }}</span>{% endif %}
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;"><strong>Causal Agent:</strong> {{ d.causal_agent }}</p>
+                    <p style="font-size: 0.85rem; line-height: 1.5;"><strong>Symptoms:</strong> {{ d.symptoms|truncatechars:120 }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

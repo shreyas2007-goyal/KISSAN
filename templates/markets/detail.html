@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{{ mandi.name }} – Mandi Intelligence{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <div class="card" style="margin-bottom: 28px;">
+        <span class="badge badge-verified">{{ mandi.market_type }}</span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-primary); margin: 8px 0;">
+            {{ mandi.name }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            District: <strong>{{ mandi.district }}</strong> | State: <strong>{{ mandi.state }}</strong> | Mandi Cess: <strong>{{ mandi.market_fee_percent }}%</strong> | Unloading: <strong>₹{{ mandi.unloading_charge_per_quintal }}/qtl</strong>
+        </p>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title" style="margin-bottom: 16px;">Active Commodity Prices in this Mandi</h2>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Commodity</th>
+                        <th>Min Price</th>
+                        <th>Max Price</th>
+                        <th>Modal Price</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in prices %}
+                        <tr>
+                            <td><strong>{{ p.crop.name }}</strong></td>
+                            <td>₹{{ p.min_price }}</td>
+                            <td>₹{{ p.max_price }}</td>
+                            <td><strong style="color: #059669; font-size: 1.1rem;">₹{{ p.modal_price }}</strong></td>
+                            <td>{{ p.price_date }}</td>
+                            <td>
+                                <a href="{% url 'calculator:calculate' %}?crop={{ p.crop.id }}" class="btn btn-outline btn-sm">Calculate Return →</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center;">No prices recorded.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Crop Disease Encyclopedia – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <div style="margin-bottom: 32px;">
+        <span class="badge badge-verified">Comprehensive Research Reference</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+            Crop Disease & Pathogen Encyclopedia
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Curated pathogen profiles with bilingual symptoms (English & Hindi) and university-approved treatments.
+        </p>
+    </div>
+
+    <div class="grid grid-2">
+        {% for d in diseases %}
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <div>
+                        <span class="badge badge-verified" style="margin-bottom: 4px;">{{ d.crop.name }}</span>
+                        <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">{{ d.name_en }}</h2>
+                        {% if d.name_hi %}<span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">{{ d.name_hi }}</span>{% endif %}
+                    </div>
+                    <span class="badge badge-warning">{{ d.get_default_severity_display }}</span>
+                </div>
+
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+                    <strong>Pathogen:</strong> {{ d.causal_agent }}
+                </p>
+
+                <div style="margin-bottom: 12px; font-size: 0.88rem; line-height: 1.5;">
+                    <strong style="color: var(--color-primary);">Identified Symptoms:</strong>
+                    <p style="margin-top: 2px;">{{ d.symptoms }}</p>
+                </div>
+
+                <div style="background: rgba(5, 150, 105, 0.05); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 12px; font-size: 0.85rem;">
+                    <strong style="color: #03543F;">Recommended Treatment:</strong>
+                    <p style="margin-top: 2px;">{{ d.treatment }}</p>
+                </div>
+
+                {% if d.recommended_pesticide %}
+                    <div style="font-size: 0.82rem; color: #92400E; background: #FEF3C7; padding: 6px 10px; border-radius: var(--radius-sm);">
+                        <strong>University Chemical Recommendation:</strong> {{ d.recommended_pesticide }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

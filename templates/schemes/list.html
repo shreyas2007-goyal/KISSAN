@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Government Scheme Directory – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <!-- Title -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">Direct Government Schemes</span>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                {{ t.nav_schemes }}
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Official financial assistance, subsidies, credit, and insurance programmes for Indian agriculture.
+            </p>
+        </div>
+
+        <a href="{% url 'schemes:eligibility' %}" class="btn btn-primary">
+            🎯 Check My Eligibility Wizard
+        </a>
+    </div>
+
+    <!-- Search / Filter Form -->
+    <div class="card" style="margin-bottom: 28px;">
+        <form method="get">
+            <div class="grid grid-4" style="align-items: flex-end;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Search Schemes</label>
+                    <input type="text" name="q" value="{{ query }}" placeholder="e.g. PM-KISAN, Bima, Drip..." class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Scheme Level</label>
+                    <select name="level" class="form-select">
+                        <option value="">All Levels</option>
+                        <option value="CENTRAL" {% if level == 'CENTRAL' %}selected{% endif %}>Central Govt Schemes</option>
+                        <option value="STATE" {% if level == 'STATE' %}selected{% endif %}>State Govt Schemes</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Applicable State</label>
+                    <select name="state" class="form-select">
+                        <option value="">All Regions</option>
+                        {% for st in states %}
+                            <option value="{{ st }}" {% if state == st %}selected{% endif %}>{{ st }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-outline" style="width: 100%;">Search Schemes →</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Schemes Cards List -->
+    <div class="grid grid-2">
+        {% for s in schemes %}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <div>
+                            <span class="badge badge-verified" style="margin-bottom: 4px;">{{ s.get_level_display }}</span>
+                            <h2 class="card-title" style="font-size: 1.2rem;">{{ s.name }}</h2>
+                            {% if s.name_hi %}<span style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600;">{{ s.name_hi }}</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: var(--text-muted); margin: 10px 0;">
+                        {{ s.objective|truncatechars:140 }}
+                    </p>
+
+                    <div style="background: rgba(5, 150, 105, 0.08); padding: 12px 14px; border-radius: var(--radius-sm); margin-bottom: 14px;">
+                        <strong style="color: var(--color-primary); font-size: 0.9rem;">Key Benefit / Financial Assistance:</strong>
+                        <p style="font-size: 0.88rem; color: var(--text-main); margin-top: 4px;">{{ s.benefits }}</p>
+                    </div>
+
+                    <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
+                        <span style="display:block;"><strong>Department:</strong> {{ s.department }}</span>
+                        <span style="display:block;"><strong>Helpline:</strong> {{ s.helpline_number }}</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 16px;">
+                    <span style="font-size: 0.78rem; color: var(--text-muted);">Last Verified: {{ s.last_verified_date }}</span>
+                    <a href="{% url 'schemes:detail' s.id %}" class="btn btn-outline btn-sm">
+                        View Application Process →
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No schemes found matching search criteria.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Contact & KVK Support – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; padding: 50px 20px;">
+    <div class="card" style="padding: 40px;">
+        <span class="badge badge-verified" style="margin-bottom: 12px;">Agricultural Assistance</span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 16px;">
+            Contact KisanSAATHI Support & KVK Helpdesk
+        </h1>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">
+            Have questions about mandi price synchronization, net realisation calculations, or need extension support from your local Krishi Vigyan Kendra (KVK)? Reach out to our technical team.
+        </p>
+
+        {% if success %}
+            <div class="alert alert-success">
+                <span>✓</span> Thank you! Your message has been received by our agricultural support officers.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">Your Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="e.g. Ramesh Kumar">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mobile Number</label>
+                    <input type="text" name="phone" class="form-control" required placeholder="e.g. 9812044001">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Subject</label>
+                <select name="subject" class="form-select">
+                    <option value="calculator">Net Realisation Calculator Inquiry</option>
+                    <option value="wellness">Crop Disease Screening Guidance</option>
+                    <option value="schemes">Government Scheme Application Query</option>
+                    <option value="web3">Digital Receipt & Web3 Verification</option>
+                    <option value="buyer">Buyer & FPO Connectivity</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Message / Details</label>
+                <textarea name="message" class="form-control" rows="4" required placeholder="Describe your question or issue..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Submit Inquiry →
+            </button>
+        </form>
+
+        <div style="margin-top: 36px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">
+                Direct Helplines
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">
+                National Kisan Call Centre: <strong>1800-180-1551</strong> (Toll Free, 6 AM to 10 PM)<br>
+                PM-KISAN Helpline: <strong>155261 / 011-24300606</strong><br>
+                Email Support: <strong>support@kisansaathi.in</strong>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

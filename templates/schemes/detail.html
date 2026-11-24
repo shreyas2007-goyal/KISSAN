@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}{{ scheme.name }} – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 40px 20px;">
+    <div class="card" style="padding: 36px; box-shadow: var(--shadow-md);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <span class="badge badge-verified">{{ scheme.get_level_display }} | {{ scheme.applicable_state }}</span>
+                <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--color-primary); margin: 6px 0;">
+                    {{ scheme.name }}
+                </h1>
+                {% if scheme.name_hi %}<span style="font-size: 1.1rem; color: var(--text-muted); font-weight: 600;">{{ scheme.name_hi }}</span>{% endif %}
+            </div>
+
+            {% if user.is_authenticated and user.farmer_profile %}
+                <a href="{% url 'schemes:bookmark' scheme.id %}" class="btn btn-outline btn-sm">
+                    {% if is_bookmarked %}★ Bookmarked{% else %}☆ Save Scheme{% endif %}
+                </a>
+            {% endif %}
+        </div>
+
+        <div style="background: rgba(5, 150, 105, 0.08); padding: 18px; border-radius: var(--radius-md); border-left: 4px solid var(--color-accent); margin-bottom: 24px;">
+            <strong style="color: var(--color-primary); font-size: 1.05rem; display: block; margin-bottom: 6px;">
+                Direct Benefits & Assistance
+            </strong>
+            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main);">
+                {{ scheme.benefits }}
+            </p>
+            {% if scheme.benefits_hi %}
+                <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); margin-top: 6px;">
+                    {{ scheme.benefits_hi }}
+                </p>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">
+                Scheme Objective
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                {{ scheme.objective }}
+            </p>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">
+                Eligibility Requirements
+            </h3>
+            <p style="color: var(--text-main); line-height: 1.6; font-size: 0.95rem;">
+                {{ scheme.eligibility_criteria }}
+            </p>
+        </div>
+
+        <div style="margin-bottom: 28px;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">
+                Mandatory Supporting Documents
+            </h3>
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: 0.9rem;">
+                {{ scheme.required_documents }}
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 20px; flex-wrap: wrap; gap: 14px;">
+            <div>
+                <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Official Helpline: <strong>{{ scheme.helpline_number }}</strong></span>
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Last Verified: {{ scheme.last_verified_date }}</span>
+            </div>
+
+            <a href="{{ scheme.official_portal_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                Official Application Portal ↗
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}FPO Network & Collective Selling – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">Collective Bargaining & Produce Aggregation</span>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                {{ t.nav_fpo }}
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Connect with registered Farmer Producer Organizations (FPOs) to pool small harvest lots into commercial bulk supply.
+            </p>
+        </div>
+
+        {% if user.is_authenticated and user.fpo_profile %}
+            <a href="{% url 'dashboard:fpo_dashboard' %}" class="btn btn-primary">My FPO Dashboard →</a>
+        {% endif %}
+    </div>
+
+    <!-- FPO Directory Cards -->
+    <div class="grid grid-2">
+        {% for f in fpos %}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <div>
+                            <span class="badge badge-verified" style="margin-bottom: 4px;">Registered FPO</span>
+                            <h2 class="card-title" style="font-size: 1.25rem;">{{ f.name }}</h2>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">{{ f.district }}, {{ f.state }}</span>
+                        </div>
+                        <span class="badge badge-verified">{{ f.total_members }} Farmers</span>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: var(--text-muted); margin: 12px 0;">
+                        CIN Reg: <strong>{{ f.registration_number }}</strong> | Headquarters: {{ f.headquarters }}
+                    </p>
+
+                    <!-- Active Lots -->
+                    <div style="background: rgba(20, 83, 45, 0.04); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 14px;">
+                        <strong style="font-size: 0.85rem; color: var(--color-primary); display:block; margin-bottom: 6px;">Active Aggregated Lots:</strong>
+                        {% for lot in f.lots.all %}
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+                                <span>{{ lot.crop.name }} ({{ lot.lot_code }})</span>
+                                <strong style="color: #059669;">{{ lot.aggregated_quantity_quintals }} qtl @ ₹{{ lot.target_price_per_quintal }}/qtl</strong>
+                            </div>
+                        {% empty %}
+                            <span style="font-size:0.8rem; color:var(--text-muted);">No active collective lots forming right now.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                    <span style="font-size: 0.82rem; color: var(--text-muted);">Phone: {{ f.contact_phone }}</span>
+                    <a href="{% url 'fpo:detail' f.id %}" class="btn btn-outline btn-sm">View FPO Details →</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No registered FPOs found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

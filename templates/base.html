@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ current_language|default:'hi' }}" class="{{ theme_class }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t.brand_name }} - {{ t.tagline }}{% endblock %}</title>
+    <meta name="description" content="AI-Powered & Web3-Enabled Agricultural Intelligence Ecosystem for Indian Farmers">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{{ theme_class }}">
+
+    <!-- 1. Top Utility Accessibility & Language Bar -->
+    <header class="top-bar" role="region" aria-label="Accessibility and Language Settings">
+        <div class="container bar-inner">
+            <div class="a11y-controls">
+                <span style="font-weight:700;">♿ {{ t.nav_dashboard }}:</span>
+                <!-- Theme Mode -->
+                <a href="{% url 'accessibility:toggle' %}?theme=light" title="Standard Light Mode" aria-label="Light Mode">☀️ Light</a>
+                <a href="{% url 'accessibility:toggle' %}?theme=dark" title="Dark Mode" aria-label="Dark Mode">🌙 Dark</a>
+                <a href="{% url 'accessibility:toggle' %}?theme=high-contrast" title="High Contrast Mode" aria-label="High Contrast">⚡ High Contrast</a>
+                
+                <!-- Font Scaling -->
+                <span style="margin-left:8px; opacity:0.6;">|</span>
+                <span style="margin-left:4px;">Text:</span>
+                <a href="{% url 'accessibility:toggle' %}?text_size=normal" title="Normal Font Size">A</a>
+                <a href="{% url 'accessibility:toggle' %}?text_size=large" title="Large Font Size" style="font-size:1.05rem; font-weight:700;">A+</a>
+                <a href="{% url 'accessibility:toggle' %}?text_size=xlarge" title="Jumbo Font Size" style="font-size:1.2rem; font-weight:900;">A++</a>
+
+                <!-- Simple Farmer Mode Toggle -->
+                <span style="margin-left:8px; opacity:0.6;">|</span>
+                {% if is_simple_mode %}
+                    <a href="{% url 'accessibility:toggle' %}?simple_mode=0" style="background:#D97706; color:white; font-weight:700;">✓ {{ t.btn_simple_mode }} (Active)</a>
+                {% else %}
+                    <a href="{% url 'accessibility:toggle' %}?simple_mode=1" title="Enable simplified interface for farmers">🚜 {{ t.btn_simple_mode }}</a>
+                {% endif %}
+            </div>
+
+            <!-- Language Switcher -->
+            <div class="lang-controls">
+                <span>🌐 भाषा / Language:</span>
+                {% for code, label in available_languages %}
+                    <a href="{% url 'multilingual:switch' code %}" class="{% if current_language == code %}active-lang{% endif %}" style="{% if current_language == code %}background:#059669; font-weight:700; border-color:#34D399;{% endif %}">
+                        {{ label }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. Main Navigation Bar -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <div class="container nav-inner">
+            <a href="{% url 'public:home' %}" class="brand-logo" aria-label="KisanSAATHI 2.0 Home">
+                <div class="brand-icon" aria-hidden="true">🌾</div>
+                <div>
+                    <span class="brand-name">{{ t.brand_name }}</span>
+                    <span class="brand-tagline">{{ t.tagline }}</span>
+                </div>
+            </a>
+
+            <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation menu">
+                ☰
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="{% url 'public:home' %}">{{ t.nav_home }}</a></li>
+                <li><a href="{% url 'markets:list' %}">{{ t.nav_markets }}</a></li>
+                <li><a href="{% url 'calculator:calculate' %}">{{ t.nav_calculator }}</a></li>
+                <li><a href="{% url 'wellness:home' %}">{{ t.nav_wellness }}</a></li>
+                <li><a href="{% url 'schemes:list' %}">{{ t.nav_schemes }}</a></li>
+                <li><a href="{% url 'buyers:list' %}">{{ t.nav_buyers }}</a></li>
+                <li><a href="{% url 'fpo:list' %}">{{ t.nav_fpo }}</a></li>
+                <li><a href="{% url 'logistics:index' %}">{{ t.nav_logistics }}</a></li>
+                <li><a href="{% url 'web3_ledger:verify' %}">{{ t.nav_web3 }}</a></li>
+                <li><a href="{% url 'assistant:chat' %}" style="color:#059669; font-weight:800;">🤖 {{ t.nav_assistant }}</a></li>
+            </ul>
+
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard:dispatcher' %}" class="btn btn-outline btn-sm">📊 {{ t.nav_dashboard }}</a>
+                    <a href="{% url 'accounts:logout' %}" class="btn btn-outline btn-sm" style="color:#DC2626; border-color:#FCA5A5;">{{ t.nav_logout }}</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">{{ t.nav_login }}</a>
+                    <a href="{% url 'accounts:register_farmer' %}" class="btn btn-primary btn-sm">{{ t.nav_register }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. Global Notification / Alert Messages -->
+    <div class="container" style="margin-top: 16px;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">
+                    <span>🔔</span> {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- 4. Main Body Content -->
+    <main role="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 5. Global Agricultural Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                        <span style="font-size:1.8rem;">🌾</span>
+                        <span style="color:white; font-size:1.3rem; font-weight:800;">{{ t.brand_name }}</span>
+                    </div>
+                    <p style="font-size:0.9rem; line-height:1.5; margin-bottom:16px;">
+                        {{ t.tagline }}.<br>
+                        Empowering Indian farmers with real-time mandi prices, net realization calculations, AI crop wellness screening, and independently verifiable Web3 receipts.
+                    </p>
+                    <span class="badge badge-demo">★ DEMO & AUDIT COMPLIANT INSTANCE</span>
+                </div>
+
+                <div>
+                    <h3 class="footer-title">Agricultural Solutions</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'markets:list' %}">Mandi Price Explorer</a></li>
+                        <li><a href="{% url 'calculator:calculate' %}">Net Realisation Calculator</a></li>
+                        <li><a href="{% url 'wellness:home' %}">AI Crop Disease Screening</a></li>
+                        <li><a href="{% url 'schemes:list' %}">Government Scheme Connect</a></li>
+                        <li><a href="{% url 'assistant:chat' %}">Voice AI Krishi Officer</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-title">Ecosystem & Trade</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'buyers:list' %}">Verified Buyer Directory</a></li>
+                        <li><a href="{% url 'fpo:list' %}">FPO Collective Aggregation</a></li>
+                        <li><a href="{% url 'logistics:index' %}">Warehousing & Transport</a></li>
+                        <li><a href="{% url 'web3_ledger:verify' %}">Trust Ledger (Web3 Portal)</a></li>
+                        <li><a href="{% url 'public:features' %}">Platform Features</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-title">Governance & Policy</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'public:about' %}">About KisanSAATHI</a></li>
+                        <li><a href="{% url 'public:contact' %}">Contact & KVK Support</a></li>
+                        <li><a href="{% url 'public:faq' %}">Frequently Asked Questions</a></li>
+                        <li><a href="{% url 'public:privacy' %}">Privacy & Farmer Data Policy</a></li>
+                        <li><a href="{% url 'public:terms' %}">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 KisanSAATHI 2.0. Python-First Full-Stack Agricultural Intelligence Platform. Designed for Indian Farmers.</p>
+                <p style="margin-top:6px; font-size:0.75rem; color:#64748B;">
+                    Official Data Sources: Agmarknet (DAC&FW), Open Government Data (data.gov.in), PlantVillage Research Dataset, Sepolia EVM Testnet.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

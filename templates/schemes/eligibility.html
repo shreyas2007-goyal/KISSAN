@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Scheme Eligibility Wizard – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 40px 20px;">
+    <div style="text-align: center; margin-bottom: 32px;">
+        <span class="badge badge-verified">Rule-Based Eligibility Engine</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+            Farmer Scheme Eligibility Assistant
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Answer 3 quick agricultural questions to discover potential government subsidy and income support schemes.
+        </p>
+    </div>
+
+    <!-- Questionnaire Card -->
+    <div class="card" style="margin-bottom: 36px; box-shadow: var(--shadow-md);">
+        <form method="post">
+            {% csrf_token %}
+            <div class="grid grid-3">
+                <div class="form-group">
+                    <label class="form-label">Total Landholding (Acres)</label>
+                    <input type="number" step="0.5" name="land_size" class="form-control" value="2.5" required>
+                    <small style="color:var(--text-muted);">Small/Marginal: &lt; 5 Acres</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Are you an FPO Member?</label>
+                    <select name="is_fpo" class="form-select">
+                        <option value="yes">Yes, Registered Shareholder</option>
+                        <option value="no" selected>No, Individual Producer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Primary Crop Type</label>
+                    <select name="crop_type" class="form-select">
+                        <option value="Cereal">Cereals (Wheat, Paddy, Maize)</option>
+                        <option value="Horticulture">Horticulture (Tomato, Potato, Fruits)</option>
+                        <option value="Oilseed">Oilseeds (Mustard, Groundnut)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                Evaluate Matched Schemes →
+            </button>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    {% if results %}
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary); margin-bottom: 20px;">
+                Matched Government Schemes ({{ results|length }} Schemes)
+            </h2>
+
+            <div class="grid grid-2">
+                {% for r in results %}
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <h3 class="card-title" style="font-size: 1.15rem;">{{ r.scheme.name }}</h3>
+                            <span class="badge {% if 'High' in r.status %}badge-verified{% else %}badge-demo{% endif %}">
+                                {{ r.status }}
+                            </span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">{{ r.scheme.objective|truncatechars:120 }}</p>
+                        <div style="background: rgba(5, 150, 105, 0.08); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 12px;">
+                            <strong>Benefit:</strong> {{ r.scheme.benefits|truncatechars:90 }}
+                        </div>
+                        <a href="{% url 'schemes:detail' r.scheme.id %}" class="btn btn-outline btn-sm" style="width:100%; text-align:center;">
+                            View Application Criteria →
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Policy – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 50px 20px;">
+    <div class="card" style="padding: 40px;">
+        <span class="badge badge-verified" style="margin-bottom: 12px;">Data Protection & Trust</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 16px;">
+            Farmer Privacy & Data Protection Policy
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">
+            Last Updated: November 2026 | Effective for all KisanSAATHI 2.0 users
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin: 20px 0 8px 0;">1. Information We Collect</h3>
+        <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px;">
+            We collect basic operational information required to calculate net realization and deliver agricultural advisory:
+            mobile number, name, district, state, landholding acreage, and uploaded crop photographs for AI screening.
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin: 20px 0 8px 0;">2. How Agricultural Data is Used</h3>
+        <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px;">
+            Your crop data and price calculations are used exclusively to provide market recommendations and scheme eligibility filtering. We do NOT sell individual farmer crop records or financial numbers to third-party marketing brokers.
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin: 20px 0 8px 0;">3. Web3 & Off-Chain Storage Policy</h3>
+        <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px;">
+            In strict compliance with Web3 security standards:
+            <strong>No personally identifiable information (such as Aadhaar numbers, phone numbers, or residential addresses) is ever recorded on public blockchains.</strong>
+            Only cryptographic SHA-256 receipt hashes and transaction reference identifiers are anchored on-chain.
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin: 20px 0 8px 0;">4. User Rights & Data Deletion</h3>
+        <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px;">
+            Farmers and buyers retain full rights to request account deactivation and deletion of uploaded plant photographs at any time by contacting our support desk at privacy@kisansaathi.in.
+        </p>
+    </div>
+</div>
+{% endblock %}

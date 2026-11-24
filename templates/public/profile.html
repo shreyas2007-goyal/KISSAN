@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}User Profile – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px; padding: 40px 20px;">
+    <div class="card">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                👤
+            </div>
+            <div>
+                <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--color-primary);">
+                    {{ user.get_full_name|default:user.username }}
+                </h1>
+                <span class="badge badge-verified">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <div class="grid grid-2" style="gap: 16px; margin-bottom: 24px;">
+            <div>
+                <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700;">USERNAME</label>
+                <p style="font-size: 1.05rem; font-weight: 600;">{{ user.username }}</p>
+            </div>
+            <div>
+                <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700;">MOBILE NUMBER</label>
+                <p style="font-size: 1.05rem; font-weight: 600;">{{ user.phone_number|default:'Not provided' }}</p>
+            </div>
+            <div>
+                <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700;">ACCOUNT ROLE</label>
+                <p style="font-size: 1.05rem; font-weight: 600;">{{ user.get_role_display }}</p>
+            </div>
+            <div>
+                <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700;">PREFERRED LANGUAGE</label>
+                <p style="font-size: 1.05rem; font-weight: 600;">{{ user.preferred_language|upper }}</p>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <a href="{% url 'dashboard:dispatcher' %}" class="btn btn-primary">Go to Dashboard →</a>
+            <a href="{% url 'accounts:logout' %}" class="btn btn-outline" style="color: #DC2626; border-color: #FCA5A5;">Logout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Storage & Transporter Discovery – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <!-- Title -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">Post-Harvest Supply Chain</span>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                {{ t.nav_logistics }}
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Discover WDRA-accredited scientific warehouses, cold chain stores, and verified rural farm-gate transporters.
+            </p>
+        </div>
+
+        <a href="{% url 'calculator:calculate' %}" class="btn btn-primary">
+            💰 Include Freight in Calculator
+        </a>
+    </div>
+
+    <!-- Storage Facilities Section -->
+    <div class="card" style="margin-bottom: 36px;">
+        <div class="card-header">
+            <span class="card-title">🏢 Scientific Warehouses & Cold Storages</span>
+            <span class="badge badge-verified">WDRA Accredited</span>
+        </div>
+
+        <div class="grid grid-2">
+            {% for s in storages %}
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background: var(--bg-surface); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                            <h3 style="font-size: 1.15rem; font-weight: 800;">{{ s.name }}</h3>
+                            <span class="badge badge-verified">{{ s.get_facility_type_display }}</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">{{ s.location }}</p>
+
+                        <div style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 12px;">
+                            <span style="display: block;">• Total Capacity: <strong>{{ s.total_capacity_mt }} MT</strong></span>
+                            <span style="display: block;">• Available Vacant: <strong style="color:#059669;">{{ s.available_capacity_mt }} MT</strong></span>
+                            <span style="display: block;">• Rental Rate: <strong>₹{{ s.monthly_rate_per_quintal }}/quintal/month</strong></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Contact: <strong>{{ s.contact_phone }}</strong></span>
+                        {% if s.is_wdra_accredited %}
+                            <span class="badge badge-verified">e-NWR Loan Eligible</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No storage facilities listed.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Transporters Section -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">🚚 Rural & Highway Agricultural Transporters</span>
+            <span class="badge badge-verified">Verified Carriers</span>
+        </div>
+
+        <div class="grid grid-2">
+            {% for t_obj in transporters %}
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background: var(--bg-surface); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                            <h3 style="font-size: 1.15rem; font-weight: 800;">{{ t_obj.transporter_name }}</h3>
+                            <span class="badge badge-demo">{{ t_obj.get_vehicle_type_display }}</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Operating District: {{ t_obj.operating_district }}</p>
+
+                        <div style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 12px;">
+                            <span style="display: block;">• Payload Capacity: <strong>{{ t_obj.capacity_quintals }} quintals</strong></span>
+                            <span style="display: block;">• Freight Rate: <strong>₹{{ t_obj.rate_per_km }}/km</strong></span>
+                            <span style="display: block;">• Base Loading/Trip: <strong>₹{{ t_obj.base_loading_charge }}</strong></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Direct Phone: <strong>{{ t_obj.contact_phone }}</strong></span>
+                        <a href="tel:{{ t_obj.contact_phone }}" class="btn btn-outline btn-sm">Call Transporter 📞</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No verified transporters available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

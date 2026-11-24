@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}Digital Receipt {{ receipt.receipt_code }} – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; padding: 40px 20px;">
+    <!-- Printable Digital Receipt Card -->
+    <div class="card" style="padding: 40px; box-shadow: var(--shadow-lg); border-top: 6px solid var(--color-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; flex-wrap: wrap; gap: 14px;">
+            <div>
+                <span class="badge badge-verified" style="margin-bottom: 6px;">Web3 Verified Digital Receipt</span>
+                <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary);">
+                    Receipt: {{ receipt.receipt_code }}
+                </h1>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">
+                    Date of Settlement: {{ receipt.transaction.transaction_date }} | Status: <strong>Payment Cleared</strong>
+                </span>
+            </div>
+
+            <div style="text-align: right;">
+                <button type="button" onclick="window.print()" class="btn btn-outline btn-sm">
+                    🖨️ Print Receipt
+                </button>
+            </div>
+        </div>
+
+        <!-- Parties Involved -->
+        <div class="grid grid-2" style="margin-bottom: 24px;">
+            <div style="background: rgba(0,0,0,0.02); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">PRODUCER / SELLER</span>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 4px 0;">
+                    {{ receipt.transaction.farmer.user.get_full_name|default:receipt.transaction.farmer.user.username }}
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    {{ receipt.transaction.farmer.village }}, {{ receipt.transaction.farmer.district }}, {{ receipt.transaction.farmer.state }}
+                </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.02); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">VERIFIED BUYER / TRADER</span>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 4px 0;">
+                    {{ receipt.transaction.buyer.business_name|default:"Verified Mandi Buyer" }}
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    License: {{ receipt.transaction.buyer.mandi_license_number|default:'APMC Reg' }} | Contact: {{ receipt.transaction.buyer.contact_phone }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Commercial Terms Table -->
+        <div class="table-responsive" style="margin-bottom: 24px;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Item Description</th>
+                        <th>Weighed Quantity</th>
+                        <th>Rate / Quintal</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{{ receipt.transaction.crop.name }}</strong> (Standard FAQ Grade)</td>
+                        <td>{{ receipt.transaction.quantity_quintals }} Quintals</td>
+                        <td>₹{{ receipt.transaction.agreed_rate_per_quintal }}/qtl</td>
+                        <td>₹{{ receipt.transaction.gross_amount|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right; color: var(--text-muted);">Less: Weighment, Loading & Mandi Charges</td>
+                        <td style="color: #DC2626;">- ₹{{ receipt.transaction.total_deductions_expenses|floatformat:2 }}</td>
+                    </tr>
+                    <tr style="background: rgba(5, 150, 105, 0.08); font-size: 1.15rem;">
+                        <td colspan="3" style="text-align: right; font-weight: 800; color: var(--color-primary);">Net Paid to Farmer in Bank / UPI:</td>
+                        <td style="font-weight: 900; color: #059669;">₹{{ receipt.transaction.net_payable_to_farmer|floatformat:2 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Cryptographic Proof Box -->
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
+            <strong style="font-size: 0.85rem; color: var(--color-primary); display: block; margin-bottom: 6px;">
+                🔗 On-Chain Proof & Fingerprint (Ethereum Sepolia EVM)
+            </strong>
+            <div style="font-family: monospace; font-size: 0.8rem; color: #475569; word-break: break-all; line-height: 1.6;">
+                <div><strong>SHA-256 Hash:</strong> {{ receipt.sha256_hash }}</div>
+                <div><strong>TX Hash:</strong> {{ receipt.blockchain_anchor.tx_hash }}</div>
+                <div><strong>Block Number:</strong> #{{ receipt.blockchain_anchor.block_number }}</div>
+                <div><strong>Smart Contract:</strong> {{ receipt.blockchain_anchor.smart_contract_address }}</div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 16px;">
+            <a href="{% url 'web3_ledger:verify' %}?code={{ receipt.receipt_code }}" class="btn btn-outline btn-sm">
+                Verify This Fingerprint →
+            </a>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">
+                KisanSAATHI 2.0 Trust Ledger | Non-Repudiation Guaranteed
+            </span>
+        </div>
+    </div>
+</div>
+{% endblock %}

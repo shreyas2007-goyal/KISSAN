@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Farmer Registration – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; padding: 40px 20px;">
+    <div class="card" style="box-shadow: var(--shadow-lg);">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">🌾</div>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary);">Farmer Registration</h1>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">Join your digital agricultural intelligence platform</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mobile Number</label>
+                    {{ form.phone_number }}
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">State</label>
+                    {{ form.state }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">District</label>
+                    {{ form.district }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Cultivable Landholding (Acres)</label>
+                {{ form.landholding_acres }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Create Password</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                Complete Farmer Registration →
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 0.88rem; color: var(--text-muted);">
+            Already have an account? <a href="{% url 'accounts:login' %}" style="color: var(--color-primary); font-weight: 700;">Login here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Net Realisation & Crop Selling Calculator – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <!-- Module Header -->
+    <div style="text-align: center; max-width: 800px; margin: 0 auto 36px auto;">
+        <span class="badge badge-verified">Core Differentiating Module</span>
+        <h1 style="font-size: 2.2rem; font-weight: 900; color: var(--color-primary); margin-top: 8px;">
+            {{ t.nav_calculator }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">
+            Don't be misled by advertised gross rates. Calculate true in-hand cash returns after freight, loading, APMC cess, bag packaging, and moisture deductions.
+        </p>
+    </div>
+
+    <!-- Parameter Inputs Form -->
+    <div class="card" style="margin-bottom: 36px; box-shadow: var(--shadow-md);">
+        <form method="get" action="{% url 'calculator:calculate' %}">
+            <div class="grid grid-3" style="align-items: flex-end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Select Crop</label>
+                    <select name="crop" class="form-select" onchange="this.form.submit()">
+                        {% for c in crops %}
+                            <option value="{{ c.id }}" {% if selected_crop.id == c.id %}selected{% endif %}>
+                                {{ c.name }} ({{ c.name_hi|default:'' }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Available Harvest Quantity (Quintals)</label>
+                    <input type="number" step="0.5" name="quantity" class="form-control" value="{{ quantity }}" required>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        🔄 Re-Calculate Options
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Best Option Highlight Banner -->
+    {% if best_option %}
+        <div class="alert alert-success" style="border-width: 2px; padding: 18px 24px; margin-bottom: 30px;">
+            <div style="font-size: 1.8rem;">🏆</div>
+            <div>
+                <strong style="font-size: 1.15rem; display: block;">
+                    Highest Net Realisation: {{ best_option.name }}
+                </strong>
+                <p style="font-size: 0.95rem; margin-top: 2px;">
+                    Estimated in-hand return: <strong style="color: #03543F; font-size: 1.1rem;">₹{{ best_option.net_realisation|floatformat:2 }}</strong> 
+                    (₹{{ best_option.net_per_qtl }}/quintal). 
+                    Yields <strong>₹{{ best_option.net_realisation|floatformat:0 }}</strong> compared to local mandi, saving leakages in transport and intermediaries.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Comparative Channel Cards -->
+    <div class="grid grid-2" style="margin-bottom: 36px;">
+        {% for opt in results %}
+            <div class="card {% if opt == best_option %}calc-best-card{% endif %}" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <span class="card-title" style="font-size: 1.15rem;">{{ opt.name }}</span>
+                            <span style="display: block; font-size: 0.82rem; color: var(--text-muted);">
+                                Distance: <strong>{{ opt.distance_km }} km</strong> | Accepted Qty: <strong>{{ opt.accepted_qty }} qtl</strong>
+                            </span>
+                        </div>
+                        <span class="badge badge-demo">Rate: ₹{{ opt.price }}/qtl</span>
+                    </div>
+
+                    <!-- Gross vs Net Breakdown -->
+                    <div style="background: rgba(0, 0, 0, 0.02); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span>Gross Sale Revenue:</span>
+                            <strong>₹{{ opt.gross_revenue|floatformat:2 }}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: #DC2626;">
+                            <span>Total Selling Costs:</span>
+                            <strong>- ₹{{ opt.total_costs|floatformat:2 }}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 8px; font-size: 1.15rem;">
+                            <span><strong>{{ t.lbl_net_realisation }}:</strong></span>
+                            <strong style="color: #059669;">₹{{ opt.net_realisation|floatformat:2 }}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                            <span>{{ t.lbl_net_per_qtl }}:</span>
+                            <strong>₹{{ opt.net_per_qtl }}/qtl</strong>
+                        </div>
+                    </div>
+
+                    <!-- Cost Breakdown Details -->
+                    <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                        <span style="display: flex; justify-content: space-between;"><span>• Transport Freight:</span> <span>₹{{ opt.transport }}</span></span>
+                        <span style="display: flex; justify-content: space-between;"><span>• Labor & Palledari:</span> <span>₹{{ opt.loading }}</span></span>
+                        <span style="display: flex; justify-content: space-between;"><span>• APMC User Cess:</span> <span>₹{{ opt.mandi_fee }}</span></span>
+                        <span style="display: flex; justify-content: space-between;"><span>• Gunny Bags / Packaging:</span> <span>₹{{ opt.packaging }}</span></span>
+                        <span style="display: flex; justify-content: space-between;"><span>• Moisture / Quality Cutoff:</span> <span>₹{{ opt.quality_ded }}</span></span>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Formula: Net = Gross - Costs</span>
+                    <a href="{% url 'buyers:list' %}?crop={{ selected_crop.id }}" class="btn btn-outline btn-sm">Find Buyers →</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Action Bar: Export PDF & Save -->
+    <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-primary);">
+                Export Official Comparative Report
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">
+                Download a clean, print-friendly PDF report or save this calculation directly to your farmer profile.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+            <a href="{% url 'calculator:export_pdf' %}" class="btn btn-outline">
+                📄 Download PDF Analysis Report
+            </a>
+            {% if user.is_authenticated and user.farmer_profile %}
+                <form method="post" action="{% url 'calculator:calculate' %}?crop={{ selected_crop.id }}&quantity={{ quantity }}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">
+                        💾 Save to My Dashboard
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="btn btn-primary">
+                    Login to Save Comparison
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

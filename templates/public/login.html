@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 520px; padding: 50px 20px;">
+    <div class="card" style="box-shadow: var(--shadow-lg);">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🌾</div>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary);">{{ t.nav_login }}</h1>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">Access your KisanSAATHI 2.0 agricultural account</p>
+        </div>
+
+        <form method="post" action="{% url 'accounts:login' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label" for="login_username">Username or Mobile Number</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="login_password">Password</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                Secure Login →
+            </button>
+        </form>
+
+        <!-- Hackathon & Evaluator Quick Login Buttons -->
+        <div style="margin-top: 30px; border-top: 1px dashed var(--border-color); padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-warning);">⚡ EVALUATOR QUICK DEMO ACCOUNTS</span>
+                <span class="badge badge-demo">1-Click Auto Fill</span>
+            </div>
+
+            <div class="grid grid-2" style="gap: 8px;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="quickFill('ramesh_karnal', 'farmer123')">
+                    🌾 Farmer (Ramesh)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="quickFill('shiva_agro', 'buyer123')">
+                    🏢 Buyer (Shiva Agro)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="quickFill('fpo_samriddhi', 'fpo123')">
+                    🚜 FPO (Samriddhi)
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="quickFill('admin', 'admin123')">
+                    🛡️ Admin (Dr. Satish)
+                </button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px; font-size: 0.88rem; color: var(--text-muted);">
+            Don't have an account? <br>
+            <a href="{% url 'accounts:register_farmer' %}" style="color: var(--color-primary); font-weight: 700;">Register as Farmer</a> | 
+            <a href="{% url 'accounts:register_buyer' %}" style="color: var(--color-accent); font-weight: 700;">Register as Buyer</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function quickFill(user, pass) {
+    document.getElementById('login_username').value = user;
+    document.getElementById('login_password').value = pass;
+}
+</script>
+{% endblock %}

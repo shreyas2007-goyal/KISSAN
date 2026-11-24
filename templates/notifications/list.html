@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Notifications – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; padding: 40px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary);">Notifications & Alerts</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Mandi price movements, buyer quotes, and scheme deadlines</p>
+        </div>
+        <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-outline btn-sm">Mark All as Read</a>
+    </div>
+
+    <div class="grid" style="gap: 12px;">
+        {% for n in notifications %}
+            <div class="card" style="padding: 16px; border-left: 4px solid {% if n.is_read %}var(--border-color){% else %}var(--color-accent){% endif %}; background: {% if not n.is_read %}rgba(5,150,105,0.02){% else %}var(--bg-surface){% endif %};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                    <strong style="font-size: 1rem; color: var(--text-main);">{{ n.title }}</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">{{ n.created_at|timesince }} ago</span>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">{{ n.message }}</p>
+                {% if n.link_url %}
+                    <a href="{% url 'notifications:mark_read' n.id %}" style="font-size: 0.82rem; font-weight: 700; color: var(--color-primary); text-decoration: none;">View Details →</a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p style="color: var(--text-muted); text-align: center; padding: 40px;">No notifications at this time.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

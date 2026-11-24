@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verified Buyer & Trader Network – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">Direct Agricultural Procurement</span>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                {{ t.nav_buyers }}
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Connect directly with APMC-licensed grain merchants, food processing mills, and corporate institutional buyers.
+            </p>
+        </div>
+
+        {% if user.is_authenticated and user.buyer_profile %}
+            <a href="{% url 'dashboard:buyer_dashboard' %}" class="btn btn-primary">My Buyer Dashboard →</a>
+        {% else %}
+            <a href="{% url 'accounts:register_buyer' %}" class="btn btn-primary">Register as Buyer / Mill →</a>
+        {% endif %}
+    </div>
+
+    <!-- Active Procurement Orders -->
+    <div class="card" style="margin-bottom: 36px;">
+        <div class="card-header">
+            <span class="card-title">📦 Active Crop Procurement Listings</span>
+            <span class="badge badge-verified">{{ requirements.count }} Open Demands</span>
+        </div>
+
+        <div class="grid grid-2">
+            {% for req in requirements %}
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; background: var(--bg-surface); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <div>
+                                <span class="badge badge-verified" style="margin-bottom: 4px;">{{ req.crop.name }}</span>
+                                <h3 style="font-size: 1.2rem; font-weight: 800;">{{ req.buyer.business_name }}</h3>
+                                <span style="font-size: 0.82rem; color: var(--text-muted);">{{ req.buyer.district }}, {{ req.buyer.state }} | Level {{ req.buyer.verification_level }} Verified</span>
+                            </div>
+                            <span style="font-size: 1.4rem; font-weight: 900; color: #059669;">₹{{ req.offered_price_per_quintal }}/qtl</span>
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin: 10px 0;">
+                            <span style="display: block;">• Required Quantity: <strong>{{ req.quantity_required_quintals }} qtl</strong> (Min order: {{ req.minimum_order_quintals }} qtl)</span>
+                            <span style="display: block;">• Delivery Point: <strong>{{ req.delivery_point }}</strong></span>
+                            <span style="display: block;">• Payment Terms: <strong>{{ req.get_payment_terms_display }}</strong></span>
+                            <span style="display: block;">• Specifications: {{ req.quality_specifications }}</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 10px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Valid Until: {{ req.valid_until }}</span>
+                        <a href="{% url 'buyers:enquire' req.id %}" class="btn btn-primary btn-sm">Submit Crop Offer →</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No active procurement requirements posted.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Verified Buyer Directory -->
+    <div class="card">
+        <h2 class="card-title" style="margin-bottom: 16px;">Verified Procurement Partners</h2>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Business / Firm Name</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Verification Status</th>
+                        <th>Contact Number</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in buyers %}
+                        <tr>
+                            <td><strong>{{ b.business_name }}</strong></td>
+                            <td>{{ b.get_category_display }}</td>
+                            <td>{{ b.district }}, {{ b.state }}</td>
+                            <td><span class="badge badge-verified">Level {{ b.verification_level }} Verified</span></td>
+                            <td>{{ b.contact_phone }}</td>
+                            <td><a href="{% url 'buyers:detail' b.id %}" class="btn btn-outline btn-sm">View Profile →</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center;">No registered buyers yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

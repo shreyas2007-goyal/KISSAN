@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ buyer.business_name }} – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 40px 20px;">
+    <div class="card" style="padding: 36px; margin-bottom: 28px;">
+        <span class="badge badge-verified">Level {{ buyer.verification_level }} Verified Partner</span>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-primary); margin: 6px 0;">
+            {{ buyer.business_name }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            {{ buyer.get_category_display }} | {{ buyer.district }}, {{ buyer.state }} | Contact: <strong>{{ buyer.contact_phone }}</strong>
+        </p>
+
+        <p style="line-height: 1.6; color: var(--text-main); margin-bottom: 18px;">
+            {{ buyer.description|default:"Leading licensed commodity buyer operating in regional grain markets." }}
+        </p>
+
+        <div class="grid grid-2" style="font-size: 0.88rem; background: var(--bg-surface); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <span><strong>GST Number:</strong> {{ buyer.gst_number|default:'On File' }}</span>
+            <span><strong>APMC License:</strong> {{ buyer.mandi_license_number|default:'Verified' }}</span>
+        </div>
+    </div>
+
+    <!-- Active Requirements from this buyer -->
+    <div class="card">
+        <h2 class="card-title" style="margin-bottom: 16px;">Active Procurement Listings from this Buyer</h2>
+        {% for req in requirements %}
+            <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <strong style="font-size: 1.1rem;">{{ req.crop.name }}</strong>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Required: {{ req.quantity_required_quintals }} qtl | Delivery: {{ req.delivery_point }}</p>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 1.3rem; font-weight: 900; color: #059669; display: block;">₹{{ req.offered_price_per_quintal }}/qtl</span>
+                    <a href="{% url 'buyers:enquire' req.id %}" class="btn btn-primary btn-sm" style="margin-top: 4px;">Submit Offer →</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="color: var(--text-muted);">No active requirements right now.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

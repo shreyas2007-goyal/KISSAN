@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ t.brand_name }} – {{ t.tagline }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <span class="badge badge-verified" style="margin-bottom: 14px;">🇮🇳 Digital Agriculture for Indian Farmers</span>
+            <h1 class="hero-title">{{ t.brand_name }}</h1>
+            <p style="font-size: 1.35rem; font-weight: 700; color: var(--color-primary); margin-bottom: 8px;">
+                {{ t.tagline }}
+            </p>
+            <p class="hero-subtitle">
+                Better Information. Smarter Decisions. Transparent Agriculture. Compare live mandi prices with direct mill quotations, calculate your actual in-hand net realization after freight and mandi cess, screen crop diseases with AI, and verify digital receipts on the blockchain.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{% url 'calculator:calculate' %}" class="btn btn-primary btn-lg">
+                    💰 {{ t.btn_calculate }}
+                </a>
+                <a href="{% url 'markets:list' %}" class="btn btn-outline btn-lg">
+                    📈 {{ t.btn_explore_prices }}
+                </a>
+                <a href="{% url 'wellness:screen' %}" class="btn btn-accent btn-lg">
+                    🍃 {{ t.btn_screen_crop }}
+                </a>
+            </div>
+
+            <div style="display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap;">
+                <div>
+                    <span style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">6+</span>
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted);">Major APMC Mandis</span>
+                </div>
+                <div>
+                    <span style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">₹2,275+</span>
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted);">Wheat MSP Benchmark</span>
+                </div>
+                <div>
+                    <span style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">10+</span>
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted);">Crop Diseases Screened</span>
+                </div>
+                <div>
+                    <span style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">100%</span>
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted);">On-Chain Hash Auditable</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <!-- Live Net Realisation Teaser Card -->
+            <div class="card calc-best-card" style="box-shadow: var(--shadow-lg);">
+                <div class="card-header">
+                    <span class="card-title">💡 Realisation Calculator Spotlight</span>
+                    <span class="badge badge-verified">Live Benchmark</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">
+                    Selling <strong>50 Quintals of Wheat</strong>? High advertised terminal mandi rates do NOT mean more cash in hand:
+                </p>
+
+                <div style="background: white; border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span><strong>FPO Collective Aggregation</strong></span>
+                        <strong style="color: #059669; font-size: 1.1rem;">₹1,19,137 Net</strong>
+                    </div>
+                    <small style="color: #64748B;">Rate: ₹2,410/qtl | Transport: ₹144 | Mandi Cess: ₹0 | In-Hand: <strong>₹2,382.74/qtl</strong></small>
+                </div>
+
+                <div style="background: white; border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; border: 1px solid var(--border-color); opacity: 0.85;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span>Terminal Mandi (Narela, Delhi)</span>
+                        <strong style="color: #475569; font-size: 1.1rem;">₹1,15,637 Net</strong>
+                    </div>
+                    <small style="color: #64748B;">Rate: ₹2,450/qtl | Transport: ₹3,325 | Cess + Labor: ₹2,450 | In-Hand: <strong>₹2,312.75/qtl</strong></small>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="{% url 'calculator:calculate' %}" class="btn btn-primary" style="width: 100%;">
+                        Run Your Own Crop Calculation →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Active Mandi Price Ticker -->
+<section style="padding: 40px 0; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+            <div>
+                <span class="badge badge-demo">★ Verified Market Feed</span>
+                <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                    {{ t.nav_markets }} (Today's Observations)
+                </h2>
+            </div>
+            <a href="{% url 'markets:list' %}" style="font-weight: 700; color: var(--color-accent); text-decoration: none;">
+                View All Mandis & Price History →
+            </a>
+        </div>
+
+        <div class="grid grid-3">
+            {% for p in featured_prices %}
+                <div class="card" style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div>
+                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">{{ p.crop.name }}</span>
+                            <span style="display: block; font-size: 0.82rem; color: var(--text-muted);">{{ p.mandi.name }} ({{ p.mandi.district }})</span>
+                        </div>
+                        <span class="badge {% if p.is_demo_data %}badge-demo{% else %}badge-verified{% endif %}">
+                            {{ p.get_source_display }}
+                        </span>
+                    </div>
+
+                    <div style="margin: 14px 0;">
+                        <span style="font-size: 1.8rem; font-weight: 900; color: var(--color-primary);">₹{{ p.modal_price }}</span>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">/ quintal</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <span>Min: <strong>₹{{ p.min_price }}</strong></span>
+                        <span>Max: <strong>₹{{ p.max_price }}</strong></span>
+                        <span>Arrival: <strong>{{ p.arrival_quantity_quintals|floatformat:0 }} qtl</strong></span>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No active price records available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- The Four Core Pillars of KisanSAATHI 2.0 -->
+<section style="padding: 60px 0;">
+    <div class="container">
+        <div style="text-align: center; max-width: 700px; margin: 0 auto 48px auto;">
+            <span class="badge badge-verified">Architectural Foundations</span>
+            <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--color-primary); margin-top: 8px;">
+                Four Connected Agricultural Intelligence Pillars
+            </h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem;">
+                Built strictly with Python and Django. Solving real agricultural financial leakages rather than displaying isolated demo dashboards.
+            </p>
+        </div>
+
+        <div class="grid grid-4">
+            <!-- Pillar 1 -->
+            <div class="card">
+                <div style="font-size: 2.2rem; margin-bottom: 14px;">⚖️</div>
+                <h3 class="card-title">1. Net Realisation Calculator</h3>
+                <p class="card-desc">
+                    Calculates true in-hand earnings by subtracting transportation, labor, bag packaging, APMC cess, and moisture deductions from gross revenue across multiple channels.
+                </p>
+                <a href="{% url 'calculator:calculate' %}" style="font-weight: 700; color: var(--color-accent); text-decoration: none;">Calculate Now →</a>
+            </div>
+
+            <!-- Pillar 2 -->
+            <div class="card">
+                <div style="font-size: 2.2rem; margin-bottom: 14px;">🍃</div>
+                <h3 class="card-title">2. AI Crop Wellness</h3>
+                <p class="card-desc">
+                    PyTorch neural screening pipeline validating leaf photographs with OpenCV preprocessing. Identifies 10+ pathogens with calibrated confidence and safety disclaimers.
+                </p>
+                <a href="{% url 'wellness:home' %}" style="font-weight: 700; color: var(--color-accent); text-decoration: none;">Screen Crop →</a>
+            </div>
+
+            <!-- Pillar 3 -->
+            <div class="card">
+                <div style="font-size: 2.2rem; margin-bottom: 14px;">🤝</div>
+                <h3 class="card-title">3. Verified Buyer & FPO Network</h3>
+                <p class="card-desc">
+                    Connects farmers and FPO clusters with certified food processors, wholesalers, and institutional buyers with 4-level verification and farm-gate delivery matching.
+                </p>
+                <a href="{% url 'buyers:list' %}" style="font-weight: 700; color: var(--color-accent); text-decoration: none;">Browse Buyers →</a>
+            </div>
+
+            <!-- Pillar 4 -->
+            <div class="card">
+                <div style="font-size: 2.2rem; margin-bottom: 14px;">🔗</div>
+                <h3 class="card-title">4. Web3 Trust Ledger</h3>
+                <p class="card-desc">
+                    Generates canonical digital sale receipts, computing SHA-256 fingerprints anchored to Ethereum EVM smart contracts for transparent, tamper-proof auditability.
+                </p>
+                <a href="{% url 'web3_ledger:verify' %}" style="font-weight: 700; color: var(--color-accent); text-decoration: none;">Verify Ledger →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Government Schemes Section -->
+<section style="padding: 50px 0; background: var(--bg-surface); border-top: 1px solid var(--border-color);">
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px;">
+            <div>
+                <span class="badge badge-verified">Scheme Connect</span>
+                <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                    {{ t.nav_schemes }}
+                </h2>
+            </div>
+            <a href="{% url 'schemes:eligibility' %}" class="btn btn-outline btn-sm">
+                Check My Eligibility Wizard →
+            </a>
+        </div>
+
+        <div class="grid grid-2">
+            {% for s in schemes %}
+                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <span class="card-title" style="font-size: 1.15rem;">{{ s.name }}</span>
+                            <span class="badge badge-verified">{{ s.get_level_display }}</span>
+                        </div>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">{{ s.objective|truncatechars:140 }}</p>
+                        <div style="background: rgba(5, 150, 105, 0.08); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 14px;">
+                            <strong style="color: var(--color-primary); font-size: 0.9rem;">Key Benefit:</strong>
+                            <p style="font-size: 0.85rem; color: var(--text-main); margin-top: 4px;">{{ s.benefits }}</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Verified: {{ s.last_verified_date }}</span>
+                        <a href="{% url 'schemes:detail' s.id %}" class="btn btn-outline btn-sm">View Requirements →</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section style="padding: 60px 0; background: linear-gradient(135deg, #14532D 0%, #059669 100%); color: white; text-align: center;">
+    <div class="container" style="max-width: 800px;">
+        <h2 style="font-size: 2.4rem; font-weight: 900; margin-bottom: 16px;">
+            Join India's Digital Agricultural Ecosystem
+        </h2>
+        <p style="font-size: 1.15rem; margin-bottom: 28px; opacity: 0.95;">
+            Whether you are a progressive farmer seeking true in-hand crop realisation, an FPO aggregating member harvest, or a verified agri-buyer looking for transparent supply chains.
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'accounts:register_farmer' %}" class="btn btn-accent btn-lg" style="background: white; color: #14532D; font-weight: 800;">
+                🌾 Register as Farmer
+            </a>
+            <a href="{% url 'accounts:register_buyer' %}" class="btn btn-outline btn-lg" style="border-color: white; color: white;">
+                🏢 Register as Trader / Buyer
+            </a>
+            <a href="{% url 'assistant:chat' %}" class="btn btn-outline btn-lg" style="border-color: #34D399; color: #34D399;">
+                🤖 Talk to Krishi Officer AI
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

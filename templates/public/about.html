@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}About KisanSAATHI 2.0 – Digital Krishi Officer{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; padding: 50px 20px;">
+    <div class="card" style="padding: 40px;">
+        <span class="badge badge-verified" style="margin-bottom: 12px;">About the Platform</span>
+        <h1 style="font-size: 2.2rem; font-weight: 900; color: var(--color-primary); margin-bottom: 16px;">
+            KisanSAATHI 2.0: Your Digital Krishi Officer
+        </h1>
+        <p style="font-size: 1.1rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 24px;">
+            KisanSAATHI 2.0 is a multilingual, accessible, AI-powered and Web3-enabled agricultural intelligence platform designed to help Indian farmers make better agronomic and financial decisions.
+        </p>
+
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin: 24px 0 12px 0;">
+            1. Why We Built KisanSAATHI 2.0
+        </h2>
+        <p style="line-height: 1.7; color: var(--text-main); margin-bottom: 16px;">
+            In traditional Indian agriculture, small and marginal farmers often suffer significant financial leakages when selling crops. While terminal mandis advertise high modal prices, the hidden deductions—freight, loading, mandi user fees, packaging bags, and quality cutoffs—can diminish the net cash received in hand. 
+            KisanSAATHI 2.0 solves this through its proprietary <strong>Net Realisation and Crop Selling Calculator</strong>, giving farmers an objective comparison between local mandis, distant markets, direct mill procurement, and FPO collective aggregation.
+        </p>
+
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin: 24px 0 12px 0;">
+            2. Python-First Architecture
+        </h2>
+        <p style="line-height: 1.7; color: var(--text-main); margin-bottom: 16px;">
+            The entire backend is built with <strong>Python 3.12+ and Django</strong>. For computer vision disease classification, we utilize <strong>PyTorch, OpenCV, and Pillow</strong>. For cryptographic receipt integrity, we employ canonical SHA-256 serialization verified on EVM smart contracts.
+        </p>
+
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin: 24px 0 12px 0;">
+            3. Transparency & Integrity Disclaimers
+        </h2>
+        <ul style="margin-left: 20px; line-height: 1.8; color: var(--text-muted);">
+            <li><strong>AI Crop Wellness:</strong> Automated preliminary screening, not a certified laboratory diagnosis.</li>
+            <li><strong>Mandi Prices:</strong> Sourced from official Agmarknet / OGD feeds or clearly marked as DEMO DATA.</li>
+            <li><strong>Web3 Ledger:</strong> Cryptographic verification of digital receipt fingerprints without speculative cryptocurrency tokens.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

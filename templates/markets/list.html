@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Smart Mandi & Market Intelligence – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <!-- Title & Description -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-demo">★ Verified Government Feeds & Demonstrations</span>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                {{ t.nav_markets }}
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                Official Mandi prices synchronized from Agmarknet and APMC electronic tickers. Sourced across Haryana, Punjab, Delhi, and UP.
+            </p>
+        </div>
+
+        <a href="{% url 'markets:compare' %}" class="btn btn-primary">
+            ⚖️ Compare Mandis Side-by-Side
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card" style="margin-bottom: 28px;">
+        <form method="get">
+            <div class="grid grid-4" style="align-items: flex-end;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Filter by Crop</label>
+                    <select name="crop" class="form-select">
+                        <option value="">All Crops</option>
+                        {% for c in crops %}
+                            <option value="{{ c.id }}" {% if selected_crop == c.id %}selected{% endif %}>
+                                {{ c.name }} ({{ c.name_hi|default:'' }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Filter by State</label>
+                    <select name="state" class="form-select">
+                        <option value="">All States</option>
+                        {% for s in states %}
+                            <option value="{{ s }}" {% if selected_state == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Filter by District</label>
+                    <select name="district" class="form-select">
+                        <option value="">All Districts</option>
+                        {% for d in districts %}
+                            <option value="{{ d }}" {% if selected_district == d %}selected{% endif %}>{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-outline" style="width: 100%;">
+                        Filter Prices →
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Mandi Prices Table -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Crop / Commodity</th>
+                        <th>Mandi Yard</th>
+                        <th>District / State</th>
+                        <th>Min Price</th>
+                        <th>Max Price</th>
+                        <th>Modal Price</th>
+                        <th>Arrivals</th>
+                        <th>Observed Date</th>
+                        <th>Data Source</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in prices %}
+                        <tr>
+                            <td>
+                                <strong>{{ p.crop.name }}</strong>
+                                {% if p.crop.name_hi %}<span style="display:block; font-size:0.8rem; color:var(--text-muted);">{{ p.crop.name_hi }}</span>{% endif %}
+                            </td>
+                            <td><strong>{{ p.mandi.name }}</strong></td>
+                            <td>{{ p.mandi.district }}, {{ p.mandi.state }}</td>
+                            <td>₹{{ p.min_price }}</td>
+                            <td>₹{{ p.max_price }}</td>
+                            <td><strong style="color: #059669; font-size: 1.1rem;">₹{{ p.modal_price }}</strong></td>
+                            <td>{{ p.arrival_quantity_quintals|floatformat:0 }} qtl</td>
+                            <td>{{ p.price_date }}</td>
+                            <td>
+                                <span class="badge {% if p.is_demo_data %}badge-demo{% else %}badge-verified{% endif %}">
+                                    {{ p.get_source_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'calculator:calculate' %}?crop={{ p.crop.id }}" class="btn btn-outline btn-sm">
+                                    Calculate Net →
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="10" style="text-align:center; padding: 24px; color: var(--text-muted);">No price records found matching criteria.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

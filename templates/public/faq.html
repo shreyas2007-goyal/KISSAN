@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Frequently Asked Questions – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 50px 20px;">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <span class="badge badge-verified">Help & FAQs</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-top: 8px;">
+            Frequently Asked Questions
+        </h1>
+        <p style="color: var(--text-muted);">Common questions about KisanSAATHI 2.0 calculators, AI models, and Web3 verification.</p>
+    </div>
+
+    <div class="grid" style="gap: 16px;">
+        <div class="card">
+            <h3 class="card-title" style="font-size: 1.15rem; margin-bottom: 8px;">
+                1. How is Net Realisation different from standard Mandi price?
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                Mandi prices only display gross rates. The Net Realisation Calculator subtracts real-world transaction expenses: transport freight, labor charges (palledari), APMC user fees (1-2%), gunny bag packaging, storage, and moisture/foreign matter deductions. This reveals the actual cash you take home.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title" style="font-size: 1.15rem; margin-bottom: 8px;">
+                2. Can the AI Crop Wellness module diagnose all diseases with 100% certainty?
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                No. The AI Crop Wellness module provides preliminary digital screening based on computer vision patterns. It is not a certified laboratory diagnosis. The platform displays calibrated confidence scores and always recommends consulting your local Krishi Vigyan Kendra (KVK) extension officer for critical crop distress.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title" style="font-size: 1.15rem; margin-bottom: 8px;">
+                3. What role does Web3 play in KisanSAATHI 2.0?
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                Web3 provides transparent, tamper-proof digital sale receipt verification. When a sale occurs, a canonical representation is created and its SHA-256 cryptographic hash is anchored on an EVM blockchain. Anyone with the receipt QR code can independently verify that the transaction terms have not been altered after settlement.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title" style="font-size: 1.15rem; margin-bottom: 8px;">
+                4. Does KisanSAATHI 2.0 require an internet connection for all features?
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                While live mandi price sync requires connectivity, previously cached prices and offline calculator estimations can be saved locally. The platform is optimized for low-bandwidth 2G/3G mobile networks.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title" style="font-size: 1.15rem; margin-bottom: 8px;">
+                5. How do FPOs benefit from KisanSAATHI 2.0?
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                FPOs can aggregate individual member harvest quantities into high-volume commercial lots. This gives the FPO collective bargaining power to demand premium rates from institutional buyers and mills, distributing the higher net realization back to members.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

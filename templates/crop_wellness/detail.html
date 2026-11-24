@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Screening Result – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 850px; padding: 40px 20px;">
+    <div class="card" style="box-shadow: var(--shadow-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <span class="badge badge-verified">Screening Report #{{ analysis.id }}</span>
+                <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--color-primary); margin-top: 6px;">
+                    Crop Health Diagnosis: {{ analysis.crop.name }}
+                </h1>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">
+                    Model: {{ analysis.model_version }} | Date: {{ analysis.created_at }}
+                </span>
+            </div>
+
+            <a href="{% url 'wellness:export_pdf' analysis.id %}" class="btn btn-outline btn-sm">
+                📄 Export PDF Certificate
+            </a>
+        </div>
+
+        <div class="grid grid-2" style="margin-bottom: 24px; align-items: flex-start;">
+            <!-- Uploaded Image -->
+            <div>
+                {% if analysis.image %}
+                    <img src="{{ analysis.image.url }}" alt="Uploaded leaf specimen" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                {% else %}
+                    <div style="background: #E2E8F0; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md);">
+                        No Image Available
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Screening Outcome Card -->
+            <div>
+                <div style="background: var(--bg-surface); border: 2px solid {% if analysis.is_healthy %}#059669{% else %}#D97706{% endif %}; border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px;">
+                    <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Identified Foliage Condition</span>
+                    <h2 style="font-size: 1.5rem; font-weight: 900; color: {% if analysis.is_healthy %}#059669{% else %}#B45309{% endif %}; margin: 6px 0;">
+                        {% if analysis.is_healthy %}
+                            Healthy Crop Foliage
+                        {% elif analysis.predicted_disease %}
+                            {{ analysis.predicted_disease.name_en }}
+                            {% if analysis.predicted_disease.name_hi %}<span style="font-size: 1rem; display:block; font-weight:600; color:var(--text-muted);">{{ analysis.predicted_disease.name_hi }}</span>{% endif %}
+                        {% else %}
+                            Inconclusive / Low Confidence
+                        {% endif %}
+                    </h2>
+
+                    <div style="margin-top: 14px; display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span>Confidence Calibration:</span>
+                        <strong>{{ analysis.confidence_score|floatformat:2 }} ({{ analysis.confidence_score|floatformat:0 }}%)</strong>
+                    </div>
+                    <div style="margin-top: 6px; display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span>Severity Assessment:</span>
+                        <span class="badge {% if analysis.is_healthy %}badge-verified{% else %}badge-warning{% endif %}">
+                            {{ analysis.get_severity_display }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if analysis.predicted_disease %}
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">
+                        <strong>Causal Pathogen:</strong> {{ analysis.predicted_disease.causal_agent }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if analysis.predicted_disease %}
+            <!-- Treatment & Management Protocols -->
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-bottom: 24px;">
+                <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 12px;">
+                    University Recommended Treatment Protocols
+                </h3>
+
+                <div class="grid grid-2">
+                    <div style="background: rgba(5, 150, 105, 0.05); padding: 16px; border-radius: var(--radius-md); border-left: 4px solid #059669;">
+                        <strong style="color: #03543F; font-size: 0.95rem; display: block; margin-bottom: 6px;">
+                            🌿 Cultural & Biological Measures
+                        </strong>
+                        <p style="font-size: 0.88rem; line-height: 1.5; color: var(--text-main);">
+                            {{ analysis.predicted_disease.treatment }}
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(217, 119, 6, 0.05); padding: 16px; border-radius: var(--radius-md); border-left: 4px solid #D97706;">
+                        <strong style="color: #92400E; font-size: 0.95rem; display: block; margin-bottom: 6px;">
+                            🧪 Approved Chemical Formulation (KVK Package)
+                        </strong>
+                        <p style="font-size: 0.88rem; line-height: 1.5; color: var(--text-main);">
+                            {{ analysis.predicted_disease.recommended_pesticide|default:"Consult local KVK extension officers for dosage." }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Mandatory Agronomic AI Disclaimer -->
+        <div class="alert alert-warning" style="font-size: 0.82rem; margin-bottom: 20px;">
+            <span>⚠️</span>
+            <div>
+                <strong>Legal & Agronomic Disclaimer:</strong> {{ analysis.disclaimer }}
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <a href="{% url 'wellness:screen' %}" class="btn btn-outline">Upload Another Photo</a>
+            <a href="{% url 'assistant:chat' %}?q=treatment+for+{{ analysis.crop.name }}" class="btn btn-primary">
+                Ask AI Krishi Assistant →
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

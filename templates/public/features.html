@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Features – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; padding: 50px 20px;">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <span class="badge badge-verified">Platform Capabilities</span>
+        <h1 style="font-size: 2.4rem; font-weight: 900; color: var(--color-primary); margin-top: 8px;">
+            Complete Agricultural Intelligence Suite
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">
+            Explore the functional modules of KisanSAATHI 2.0 designed for farmers, buyers, FPOs, and administrators.
+        </p>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+                <span>💰</span> Net Realisation Calculator
+            </h2>
+            <p class="card-desc">
+                Calculates true in-hand returns by deducting transportation freight, labor/palledari, APMC user fees, bag packaging, and moisture cutoffs across multiple selling channels.
+            </p>
+            <a href="{% url 'calculator:calculate' %}" class="btn btn-outline btn-sm">Explore Calculator →</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+                <span>📊</span> Smart Mandi Intelligence
+            </h2>
+            <p class="card-desc">
+                Real-time price tracking from Agmarknet and APMC electronic tickers. Provides Min, Max, and Modal prices, market arrivals, historical trends, and multi-mandi comparisons.
+            </p>
+            <a href="{% url 'markets:list' %}" class="btn btn-outline btn-sm">View Mandi Prices →</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+                <span>🍃</span> AI Crop Wellness Screening
+            </h2>
+            <p class="card-desc">
+                PyTorch neural classification pipeline for crop leaf photographs. Preprocessed with OpenCV blur detection and Laplacian variance. Generates downloadable PDF reports.
+            </p>
+            <a href="{% url 'wellness:home' %}" class="btn btn-outline btn-sm">Screen Crop Health →</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+                <span>📜</span> Scheme Connect Directory
+            </h2>
+            <p class="card-desc">
+                Verified database of central and state agricultural schemes (PM-KISAN, PMFBY, Soil Health Card, PMKSY, AIF). Includes an automated 4-step eligibility questionnaire.
+            </p>
+            <a href="{% url 'schemes:list' %}" class="btn btn-outline btn-sm">Discover Schemes →</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+                <span>🏢</span> Verified Buyer & FPO Network
+            </h2>
+            <p class="card-desc">
+                Procurement board connecting farmers directly with mills and food processors. FPO aggregation engine allowing small farmers to bundle harvest into commercial lots.
+            </p>
+            <a href="{% url 'buyers:list' %}" class="btn btn-outline btn-sm">Browse Buyers →</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+                <span>🔗</span> Web3 Trust Ledger
+            </h2>
+            <p class="card-desc">
+                Cryptographic integrity system generating SHA-256 fingerprints of digital sale receipts anchored to Solidity smart contracts on Sepolia EVM testnet with QR code validation.
+            </p>
+            <a href="{% url 'web3_ledger:verify' %}" class="btn btn-outline btn-sm">Verify On-Chain Receipts →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

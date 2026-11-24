@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Upload Crop Leaf Photo – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 650px; padding: 40px 20px;">
+    <div class="card" style="box-shadow: var(--shadow-lg);">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">📸</div>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary);">AI Crop Disease Screening</h1>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">Upload a clear photograph of the affected plant leaf or foliage</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Select Crop Type</label>
+                <select name="crop" class="form-select" required>
+                    {% for c in crops %}
+                        <option value="{{ c.id }}">{{ c.name }} ({{ c.name_hi|default:'' }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Upload or Capture Leaf Photo</label>
+                <input type="file" name="image" accept="image/*" capture="environment" class="form-control" required style="padding: 12px;">
+                <small style="display:block; color:var(--text-muted); margin-top: 6px;">
+                    💡 Tips: Take a close-up photo in clear natural light. Avoid extreme shadows or blurriness.
+                </small>
+            </div>
+
+            <div class="alert alert-info" style="font-size: 0.82rem; margin: 20px 0;">
+                <span>ℹ️</span> OpenCV and PyTorch vision models will validate sharpness and extract pathogen patterns. Result includes treatment & safety guidelines.
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Run AI Disease Screening Pipeline →
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

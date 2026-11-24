@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Administrator Dashboard – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">🛡️ Platform Operations Panel</span>
+            <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">
+                Krishi Control & Platform Administration
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                System monitoring, user roles, mandi datasets, AI screening verification, and Web3 trust ledger.
+            </p>
+        </div>
+
+        <a href="/admin/" class="btn btn-outline">
+            Django Admin Superuser Backend →
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-4" style="margin-bottom: 32px;">
+        <div class="card">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">TOTAL USERS</span>
+            <div style="font-size: 2rem; font-weight: 900; color: var(--color-primary); margin: 6px 0;">{{ total_users }}</div>
+            <small style="color: var(--text-muted);">Registered accounts</small>
+        </div>
+        <div class="card">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">FARMERS</span>
+            <div style="font-size: 2rem; font-weight: 900; color: #059669; margin: 6px 0;">{{ total_farmers }}</div>
+            <small style="color: var(--text-muted);">Landholding producers</small>
+        </div>
+        <div class="card">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">BUYERS</span>
+            <div style="font-size: 2rem; font-weight: 900; color: #D97706; margin: 6px 0;">{{ total_buyers }}</div>
+            <small style="color: var(--text-muted);">Verified agri traders</small>
+        </div>
+        <div class="card">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">ON-CHAIN TRANSACTIONS</span>
+            <div style="font-size: 2rem; font-weight: 900; color: #14532D; margin: 6px 0;">{{ total_transactions }}</div>
+            <small style="color: var(--text-muted);">Anchored to EVM testnet</small>
+        </div>
+    </div>
+
+    <!-- Recent AI Screenings -->
+    <div class="card" style="margin-bottom: 30px;">
+        <div class="card-header">
+            <span class="card-title">🔬 Recent AI Crop Disease Screenings</span>
+            <a href="{% url 'wellness:home' %}" style="font-size: 0.85rem; font-weight: 700; color: var(--color-accent); text-decoration: none;">Wellness Hub →</a>
+        </div>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Analysis ID</th>
+                        <th>Crop</th>
+                        <th>Predicted Condition</th>
+                        <th>Confidence</th>
+                        <th>Severity</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in recent_analyses %}
+                        <tr>
+                            <td>#{{ a.id }}</td>
+                            <td><strong>{{ a.crop.name }}</strong></td>
+                            <td>{{ a.predicted_disease.name_en|default:"Healthy Foliage" }}</td>
+                            <td>{{ a.confidence_score|floatformat:2 }}</td>
+                            <td><span class="badge badge-verified">{{ a.get_severity_display }}</span></td>
+                            <td>{{ a.created_at }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No disease screenings logged yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Farmer Dashboard – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 40px 20px;">
+    <!-- Welcome Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <span class="badge badge-verified">🌾 Kisan Portal</span>
+            <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-primary); margin-top: 4px;">
+                Welcome, {{ farmer.user.get_full_name|default:farmer.user.username }}!
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+                {{ farmer.village }}, {{ farmer.district }}, {{ farmer.state }} | Landholding: <strong>{{ farmer.landholding_acres }} Acres</strong>
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'calculator:calculate' %}" class="btn btn-primary">
+                💰 Calculate Selling Net Return
+            </a>
+            <a href="{% url 'wellness:screen' %}" class="btn btn-accent">
+                🍃 Upload Plant Photo
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-4" style="margin-bottom: 32px;">
+        <div class="card" style="padding: 20px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Active Crops Sown</span>
+            <div style="font-size: 2rem; font-weight: 900; color: var(--color-primary); margin: 6px 0;">{{ my_crops.count }}</div>
+            <small style="color: var(--text-muted);">In field vegetative growth</small>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Mandi Modal Rate (Wheat)</span>
+            <div style="font-size: 2rem; font-weight: 900; color: #059669; margin: 6px 0;">₹2,275</div>
+            <small style="color: var(--text-muted);">Karnal APMC (+₹25 above MSP)</small>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Completed Transactions</span>
+            <div style="font-size: 2rem; font-weight: 900; color: var(--color-primary); margin: 6px 0;">{{ transactions.count }}</div>
+            <small style="color: var(--text-muted);">Anchored on Web3 Ledger</small>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Buyer Procurement Quotes</span>
+            <div style="font-size: 2rem; font-weight: 900; color: #D97706; margin: 6px 0;">{{ buyer_offers.count }}</div>
+            <small style="color: var(--text-muted);">Verified active mill demands</small>
+        </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom: 32px;">
+        <!-- My Crops List -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">🌱 My Sown Crops</span>
+                <span class="badge badge-verified">{{ my_crops.count }} Planted</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Crop</th>
+                            <th>Acreage</th>
+                            <th>Estimated Qty</th>
+                            <th>Stage / Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in my_crops %}
+                            <tr>
+                                <td><strong>{{ c.crop.name }}</strong></td>
+                                <td>{{ c.acres }} Acres</td>
+                                <td>{{ c.estimated_quantity_quintals }} qtl</td>
+                                <td><span class="badge badge-verified">{{ c.get_status_display }}</span></td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No crops registered yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Latest Mandi Prices in District -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">📈 Mandi Rates ({{ farmer.district }})</span>
+                <a href="{% url 'markets:list' %}" style="font-size: 0.85rem; font-weight: 700; color: var(--color-accent); text-decoration: none;">View All →</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Crop</th>
+                            <th>Mandi</th>
+                            <th>Modal Price</th>
+                            <th>Arrivals</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in latest_prices %}
+                            <tr>
+                                <td><strong>{{ p.crop.name }}</strong></td>
+                                <td>{{ p.mandi.name }}</td>
+                                <td><strong style="color: var(--color-primary);">₹{{ p.modal_price }}</strong></td>
+                                <td>{{ p.arrival_quantity_quintals|floatformat:0 }} qtl</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No recent price records.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-2">
+        <!-- Verified Mill Buyer Opportunities -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">🏢 Direct Mill Procurement Offers</span>
+                <a href="{% url 'buyers:list' %}" style="font-size: 0.85rem; font-weight: 700; color: var(--color-accent); text-decoration: none;">Explore Buyers →</a>
+            </div>
+            
+            {% for req in buyer_offers %}
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; background: var(--bg-surface);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <strong style="font-size: 1.05rem;">{{ req.crop.name }}</strong>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">By {{ req.buyer.business_name }}</p>
+                        </div>
+                        <span style="font-size: 1.25rem; font-weight: 900; color: #059669;">₹{{ req.offered_price_per_quintal }}/qtl</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 0.82rem; color: var(--text-muted);">
+                        <span>Req: {{ req.quantity_required_quintals }} qtl</span>
+                        <a href="{% url 'buyers:enquire' req.id %}" class="btn btn-outline btn-sm">Send Crop Offer →</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Transactions & Web3 Receipts -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">📜 Verified Sale Receipts (Web3)</span>
+                <span class="badge badge-verified">On-Chain Anchored</span>
+            </div>
+
+            {% for txn in transactions %}
+                <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px; background: var(--bg-surface);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <strong style="font-size: 1rem;">{{ txn.crop.name }} ({{ txn.quantity_quintals }} qtl)</strong>
+                            <p style="font-size: 0.82rem; color: var(--text-muted);">Sold to {{ txn.buyer.business_name }} on {{ txn.transaction_date }}</p>
+                        </div>
+                        <span style="font-size: 1.2rem; font-weight: 800; color: var(--color-primary);">₹{{ txn.net_payable_to_farmer|floatformat:2 }}</span>
+                    </div>
+                    {% if txn.receipt %}
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+                            <span style="font-size: 0.75rem; font-family: monospace; color: var(--text-muted);">Receipt: {{ txn.receipt.receipt_code }}</span>
+                            <a href="{% url 'web3_ledger:receipt_detail' txn.receipt.receipt_code %}" class="btn btn-outline btn-sm" style="font-size:0.75rem;">
+                                🔗 Inspect On-Chain Proof
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p style="color: var(--text-muted); font-size: 0.9rem;">No recorded transactions yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

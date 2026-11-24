@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Web3 Trust Ledger – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; padding: 50px 20px;">
+    <div class="card" style="padding: 40px;">
+        <span class="badge badge-verified" style="margin-bottom: 12px;">Web3 Architecture</span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--color-primary); margin-bottom: 16px;">
+            KisanSAATHI Trust Ledger Architecture
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 24px;">
+            How KisanSAATHI 2.0 utilizes cryptographic SHA-256 canonical hashing and EVM smart contracts to create transparent, unforgeable agricultural receipts.
+        </p>
+
+        <div style="background: rgba(20, 83, 45, 0.05); border-left: 4px solid var(--color-primary); padding: 18px; border-radius: var(--radius-sm); margin-bottom: 24px;">
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--color-primary); margin-bottom: 8px;">
+                Strict Web3 Principles:
+            </h3>
+            <ul style="margin-left: 20px; font-size: 0.95rem; color: var(--text-main); line-height: 1.6;">
+                <li><strong>No Speculative Tokens:</strong> Blockchain is strictly used as an immutable verification ledger, not a crypto token or speculative instrument.</li>
+                <li><strong>Zero PII on Blockchain:</strong> Personal identifiers (Aadhaar, phone, address) remain strictly off-chain in encrypted relational tables.</li>
+                <li><strong>Mathematical Integrity:</strong> Any modification of grain weight, rate, or deductions invalidates the SHA-256 fingerprint immediately.</li>
+            </ul>
+        </div>
+
+        <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--color-primary); margin: 24px 0 10px 0;">
+            Receipt Verification Workflow
+        </h3>
+        <ol style="margin-left: 20px; font-size: 0.95rem; line-height: 1.8; color: var(--text-muted);">
+            <li><strong>Sale Settlement:</strong> Farmer and verified buyer agree on crop weighment, rate, and applicable deductions.</li>
+            <li><strong>Canonical Payload Generation:</strong> The system formats the core terms into a deterministic sorted JSON representation.</li>
+            <li><strong>SHA-256 Fingerprinting:</strong> A 64-character cryptographic hash is calculated from the canonical payload.</li>
+            <li><strong>On-Chain Anchoring:</strong> The receipt code and hash are recorded on the <code>AgriTrustLedger.sol</code> smart contract.</li>
+            <li><strong>QR Code Generation:</strong> The digital receipt embeds a verification link and hash for instant scanning by banks, auditors, or FPO managers.</li>
+        </ol>
+
+        <div style="margin-top: 32px; text-align: center;">
+            <a href="{% url 'web3_ledger:verify' %}" class="btn btn-primary btn-lg">
+                Go to Public Receipt Verification Portal →
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

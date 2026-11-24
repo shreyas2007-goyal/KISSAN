@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Submit Crop Offer – {{ t.brand_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 650px; padding: 40px 20px;">
+    <div class="card" style="box-shadow: var(--shadow-lg);">
+        <span class="badge badge-verified">Procurement Proposal</span>
+        <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary); margin: 6px 0;">
+            Submit Offer to {{ requirement.buyer.business_name }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+            Target Crop: <strong>{{ requirement.crop.name }}</strong> | Buyer's Base Offer: <strong>₹{{ requirement.offered_price_per_quintal }}/qtl</strong>
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Available Crop Quantity to Supply (Quintals)</label>
+                <input type="number" step="0.5" name="quantity" class="form-control" required placeholder="e.g. 40.0" min="{{ requirement.minimum_order_quintals }}">
+                <small style="color: var(--text-muted);">Minimum accepted by buyer: {{ requirement.minimum_order_quintals }} qtl</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Expected Price per Quintal (₹)</label>
+                <input type="number" step="1.0" name="expected_rate" class="form-control" required value="{{ requirement.offered_price_per_quintal }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Notes for Buyer (Moisture level, packaging, delivery date)</label>
+                <textarea name="notes" class="form-control" rows="3" placeholder="e.g. Machine threshed dry wheat ready for weighment."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Submit Formal Procurement Offer →
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
